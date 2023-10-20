@@ -8,52 +8,34 @@ from rest_framework.validators import ValidationError
 # Django
 from django.db.models import query
 
+class CustomError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
 
 class ObjectMixin:
-    """Абстрактный вспомогательный класс для объектов."""
-
-    def get_object(
-        self,
-        queryset: query.QuerySet,
-        obj_id: str
-    ) -> Any:
-        """Метод для вытаскивания объекта."""
-
-        obj: Any = queryset.filter(id=obj_id).first()
+    
+    def get_object(self, queryset, obj_id):
+        obj = queryset.filter(id=obj_id).first()
         if obj is None:
-            raise ValidationError(
-                {
-                    'status': 'Error',
-                    'results': f'Object {obj_id} not found'
-                }
-            )
+            raise CustomError(f'Object {obj_id} not found')
         return obj
 
-
 class ResponseMixin:
-    """Абстрактный вспомогательный класс для респонсов."""
 
-    STATUS_SUCCESS: str = 'Success'
-    STATUS_WARNING: str = 'Warning'
-    STATUS_ERROR: str = 'Error'
-    STATUSES: tuple[str, ...] = (
-        STATUS_SUCCESS,
-        STATUS_WARNING,
-        STATUS_ERROR
-    )
+    STATUS_SUCCESS = 'Success'
+    STATUS_WARNING = 'Warning'
+    STATUS_ERROR = 'Error'
+    STATUSES = (STATUS_SUCCESS, STATUS_WARNING, STATUS_ERROR)
 
-    def json_response(
-        self,
-        data: Any,
-        status: str = STATUS_SUCCESS
-    ) -> JsonResponse:
-
+    def json_response(self, data, status=STATUS_SUCCESS):
         if status not in self.STATUSES:
-            raise ValidationError('FATAL ERROR')
+            raise CustomError('FATAL ERROR')
 
-        return JsonResponse(
-            {
-                'status': status,
-                'results': data
-            }
-        )
+        response_data = {
+            'status': status,
+            'results': data
+        }
+
+        return JsonResponse(response_data)
