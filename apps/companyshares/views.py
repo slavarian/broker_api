@@ -14,8 +14,13 @@ from companyshares.serializers import (
     CompanySerializers
 )
 
+from abstracts.mixins import (
+    ObjectMixin,
+    ResponseMixin
+)
 
-class CompanyViewSet(ViewSet):
+
+class CompanyViewSet(ResponseMixin, ObjectMixin,ViewSet):
   
     queryset = Company.objects.all()
 
