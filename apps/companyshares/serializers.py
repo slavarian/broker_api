@@ -15,7 +15,7 @@ class SharesCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shares
         fields = [
-            'name',
+            'date_create',
             'price',
             'company'
         ]

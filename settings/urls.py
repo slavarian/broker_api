@@ -16,11 +16,15 @@ router.register(r'user', UserViewSet)
 company_router = DefaultRouter()
 company_router.register(r'list', CompanyViewSet)
 
+shares_router = DefaultRouter()
+shares_router.register(r'list', SharesViewSet)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('',include(router.urls)),
     path('company/',include(company_router.urls)),
+    path('shares/',include(shares_router.urls)),
     path("auth/", include("auths.urls")),
 ]
 
@@ -28,6 +32,6 @@ urlpatterns += [
  
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
 ]
